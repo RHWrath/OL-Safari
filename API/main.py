@@ -4,7 +4,9 @@ from fastapi.responses import FileResponse
 import os
 import asyncio
 from loguru import logger
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent
 app = FastAPI(
     title="UIM Service Manager",
     description="Unified Intent Mediator - Service Catalogue with Query Interface",
@@ -23,7 +25,7 @@ app.add_middleware(
 
 @app.get("/", response_class=FileResponse)
 def serve_frontend():
-    return FileResponse("index.html")
+    return FileResponse(BASE_DIR / "index.html")
 
 @app.get("/health")
 def health_check():
