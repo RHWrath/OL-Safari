@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLIPSafari - Travel Destinations</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        header {
+            background: #16213e;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e94560;
+        }
+        h1 {
+            color: #e94560;
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .status.online {
+            background: #0f3d3e;
+            color: #00ff88;
+        }
+        .status.offline {
+            background: #3d0f0f;
+            color: #ff4444;
+        }
+        #map {
+            height: calc(100vh - 140px);
+            width: 100%;
+        }
+        footer {
+            background: #16213e;
+            padding: 0.75rem 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        footer a {
+            color: #e94560;
+            text-decoration: none;
+        }
+        .leaflet-popup-content-wrapper {
+            background: #16213e;
+            color: #eee;
+            border-radius: 8px;
+        }
+        .leaflet-popup-tip {
+            background: #16213e;
+        }
+        .popup-content h3 {
+            color: #e94560;
+            margin-bottom: 0.5rem;
+        }
+        .popup-content p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>🦁 OLIPSafari</h1>
+            <span class="subtitle">Azure-Powered Travel Destinations</span>
+        </div>
+        <span id="api-status" class="status offline">Checking API...</span>
+    </header>
+    
+    <div id="map"></div>
+    
+    <footer>
+        Powered by <a href="https://azure.microsoft.com" target="_blank">Microsoft Azure</a> App Service 
+        | FastAPI Backend 
+        | <a href="/docs" target="_blank">API Docs</a>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize map centered on the world
+        const map = L.map('map').setView([20, 0], 2);
+        
+        // Add dark theme tile layer
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Custom marker icon
+        const destinationIcon = L.divIcon({
+            html: '<div style="background:#e94560;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 10px #e94560;"></div>',
+            className: 'custom-marker',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
+        });
+
+        // Fetch destinations from API and add markers
+        async function loadDestinations() {
+            const statusEl = document.getElementById('api-status');
+            
+            try {
+                // First check health
+                const healthRes = await fetch('/health');
+                if (!healthRes.ok) throw new Error('Health check failed');
+                
+                // Then fetch destinations
+                const res = await fetch('/destinations');
+                const data = await res.json();
+                
+                statusEl.textContent = 'API Online';
+                statusEl.className = 'status online';
+                
+                // Add markers for each destination
+                data.destinations.forEach(dest => {
+                    const marker = L.marker([dest.lat, dest.lng], { icon: destinationIcon })
+                        .addTo(map)
+                        .bindPopup(`
+                            <div class="popup-content">
+                                <h3>${dest.name}</h3>
+                                <p>${dest.description || 'A wonderful travel destination'}</p>
+                            </div>
+                        `);
+                });
+                
+                console.log(`Loaded ${data.destinations.length} destinations`);
+                
+            } catch (error) {
+                console.error('Failed to load destinations:', error);
+                statusEl.textContent = 'API Offline';
+                statusEl.className = 'status offline';
+            }
+        }
+
+        // Load destinations when page loads
+        loadDestinations();
+    </script>
+</body>
+</html>
