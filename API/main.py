@@ -25,3 +25,10 @@ def health_check():
     return {
         "status": "healthy"
     }
+
+@app.get("/Destinations")
+def Get_locations():
+    """Get locations endpoint"""
+    return {
+        "locations": ["Jberg", "Cape town", "Florida", "Sydney"]
+    }
