@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float
 from pydantic import BaseModel
-from database import Base
+from API.database import Base
 
 
 # SQLAlchemy ORM model — maps to the destinations table

@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from loguru import logger
 from pathlib import Path
 
-from database import get_db, init_db
-from models import Destination, DestinationSchema
+from API.database import get_db, init_db
+from API.models import Destination, DestinationSchema
 
 BASE_DIR = Path(__file__).resolve().parent
 

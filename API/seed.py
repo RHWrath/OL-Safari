@@ -2,8 +2,8 @@
 Run once after the DB is provisioned to seed the initial destinations.
     python seed.py
 """
-from database import SessionLocal, init_db
-from models import Destination
+from API.database import SessionLocal, init_db
+from API.models import Destination
 
 DESTINATIONS = [
     {"name": "Johannesburg", "lat": -26.2041, "lng": 28.0473, "description": "City of Gold, South Africa"},
