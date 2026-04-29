@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI(
     title="OLIPSafari",
-    description="Travel destinations API for OL",
+    description="Travel destinations API for OLIP",
     version="0.0.1",
 )
 
