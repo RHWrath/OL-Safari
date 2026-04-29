@@ -2,3 +2,6 @@
 uvicorn
 gunicorn
 loguru
+sqlalchemy
+psycopg2-binary
+pydantic
