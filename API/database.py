@@ -23,6 +23,6 @@ def get_db():
 
 def init_db():
     """Create all tables if they don't exist yet."""
-    from models import Destination  # noqa: F401 — needed for Base.metadata
+    from API.models import Destination  # noqa: F401 — needed for Base.metadata
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables initialised")
