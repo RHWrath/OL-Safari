@@ -7,6 +7,7 @@ from pathlib import Path
 
 from API.database import get_db, init_db
 from API.models import Destination, DestinationSchema
+from API.seed import seed
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -28,6 +29,7 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     init_db()
+    seed()
 
 
 @app.get("/", response_class=FileResponse)
